@@ -5,79 +5,73 @@ var escape = require('..');
 describe('escape(fmt, ...)', function(){
   describe('%s', function(){
     it('should format as a simple string', function(){
-      escape('some %s here', 'thing')
-        .should.equal('some thing here');
+      assert.equal(escape('some %s here', 'thing'), 'some thing here');
 
-      escape('some %s thing %s', 'long', 'here')
-        .should.equal('some long thing here');
+      assert.equal(escape('some %s thing %s', 'long', 'here'), 'some long thing here');
     })
   })
 
   describe('%%', function(){
     it('should format as %', function(){
-      escape('some %%', 'thing')
-        .should.equal('some %');
+      assert.equal(escape('some %%', 'thing'), 'some %');
     })
 
     it('should not eat args', function(){
-      escape('just %% a %s', 'test')
-        .should.equal('just % a test');
+      assert.equal(escape('just %% a %s', 'test'), 'just % a test');
     })
   })
 
   describe('%I', function(){
     it('should format as an identifier', function(){
-      escape('some %I', 'foo/bar/baz')
-        .should.equal('some "foo/bar/baz"');
+      assert.equal(escape('some %I', 'foo/bar/baz'), 'some "foo/bar/baz"');
     })
   })
 
   describe('%L', function(){
     it('should format as a literal', function(){
-      escape('%L', "Tobi's")
-        .should.equal("'Tobi''s'");
+      assert.equal(escape('%L', "Tobi's"), "'Tobi''s'");
     })
   })
 
   describe('%Q', function(){
     it('should format as a dollar quoted string', function(){
-      escape('%Q', "Tobi's")
-        .should.match(/\$[a-z]{1}\$Tobi's\$[a-z]\$/);
+      assert.match(escape('%Q', "Tobi's"), /\$[a-z]{1}\$Tobi's\$[a-z]\$/);
     })
   })
 })
 
 describe('escape.string(val)', function(){
   it('should coerce to a string', function(){
-    escape.string().should.equal('');
-    escape.string(0).should.equal('0');
-    escape.string(15).should.equal('15');
-    escape.string('something').should.equal('something');
+    assert.equal(escape.string(), '');
+    assert.equal(escape.string(0), '0');
+    assert.equal(escape.string(15), '15');
+    assert.equal(escape.string('something'), 'something');
   })
 })
 
 describe('escape.dollarQuotedString(val)', function() {
   it('should coerce to a dollar quoted string', function(){
-    escape.dollarQuotedString().should.equal('');
-    escape.dollarQuotedString(0).should.match(/\$[a-z]{1}\$0\$[a-z]\$/);
-    escape.dollarQuotedString(15).should.match(/\$[a-z]{1}\$15\$[a-z]\$/);
-    escape.dollarQuotedString('something').should.match(/\$[a-z]{1}\$something\$[a-z]\$/);
+    assert.equal(escape.dollarQuotedString(), '');
+    assert.match(escape.dollarQuotedString(0), /\$[a-z]{1}\$0\$[a-z]\$/);
+    assert.match(escape.dollarQuotedString(15), /\$[a-z]{1}\$15\$[a-z]\$/);
+    assert.match(escape.dollarQuotedString('something'), /\$[a-z]{1}\$something\$[a-z]\$/);
   })
 })
 
 describe('escape.ident(val)', function(){
   it('should quote when necessary', function(){
-    escape.ident('foo').should.equal('foo');
-    escape.ident('_foo').should.equal('_foo');
-    escape.ident('_foo_bar$baz').should.equal('_foo_bar$baz');
-    escape.ident('test.some.stuff').should.equal('"test.some.stuff"');
-    escape.ident('test."some".stuff').should.equal('"test.""some"".stuff"');
+    assert.equal(escape.ident('foo'), 'foo');
+    assert.equal(escape.ident('_foo'), '_foo');
+    assert.equal(escape.ident('_foo_bar$baz'), '_foo_bar$baz');
+    assert.equal(escape.ident('test.some.stuff'), '"test.some.stuff"');
+    assert.equal(escape.ident('test."some".stuff'), '"test.""some"".stuff"');
+    assert.equal(escape.ident('someStuff'), '"someStuff"');
   })
 
   it('should quote reserved words', function(){
-    escape.ident('desc').should.equal('"desc"');
-    escape.ident('join').should.equal('"join"');
-    escape.ident('cross').should.equal('"cross"');
+    assert.equal(escape.ident('desc'), '"desc"');
+    assert.equal(escape.ident('join'), '"join"');
+    assert.equal(escape.ident('cross'), '"cross"');
   })
 
   it('should throw when null', function(done){
@@ -92,24 +86,24 @@ describe('escape.ident(val)', function(){
 
 describe('escape.literal(val)', function(){
   it('should return NULL for null', function(){
-    escape.literal(null).should.equal('NULL');
-    escape.literal(undefined).should.equal('NULL');
+    assert.equal(escape.literal(null), 'NULL');
+    assert.equal(escape.literal(undefined), 'NULL');
   })
 
   it('should return a tuple for arrays', function(){
-    escape.literal(["foo", "bar", "baz' DROP TABLE foo;"]).should.equal("('foo', 'bar', 'baz'' DROP TABLE foo;')");
+    assert.equal(escape.literal(["foo", "bar", "baz' DROP TABLE foo;"]), "('foo', 'bar', 'baz'' DROP TABLE foo;')");
   })
 
   it('should quote', function(){
-    escape.literal('hello world').should.equal("'hello world'");
+    assert.equal(escape.literal('hello world'), "'hello world'");
   })
 
   it('should escape quotes', function(){
-    escape.literal("O'Reilly").should.equal("'O''Reilly'");
+    assert.equal(escape.literal("O'Reilly"), "'O''Reilly'");
   })
 
   it('should escape backslashes', function(){
-    escape.literal('\\whoop\\').should.equal("E'\\\\whoop\\\\'");
+    assert.equal(escape.literal('\\whoop\\'), "E'\\\\whoop\\\\'");
   })
 })
 
