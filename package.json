@@ -1,5 +1,5 @@
 {
-  "name": "pg-escape",
+  "name": "pg-escape-2",
   "version": "0.3.0",
   "repository": "maybephilipp/pg-escape",
   "description": "escape postgres queries which do not support stored procedures",
