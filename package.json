@@ -1,7 +1,7 @@
 {
   "name": "pg-escape",
-  "version": "0.1.0",
-  "repository": "segmentio/pg-escape",
+  "version": "0.3.0",
+  "repository": "maybephilipp/pg-escape",
   "description": "escape postgres queries which do not support stored procedures",
   "keywords": [
     "pg",
